@@ -1,0 +1,6 @@
+WhatDiceToUseIntent use dice {DiceType}
+WhatDiceToUseIntent change dice to {DiceType}
+RollTheDiceIntent roll
+RollTheDiceIntent roll the dice
+RollTheDiceIntent roll again
+WhatIsCurrDiceTypeIntent what type of dice am I using

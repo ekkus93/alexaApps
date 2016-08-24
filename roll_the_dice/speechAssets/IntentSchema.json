@@ -1,0 +1,22 @@
+{
+  "intents": [
+    {
+      "intent": "WhatDiceToUseIntent",
+      "slots": [
+        {
+          "name": "DiceType",
+          "type": "LIST_OF_DICE_TYPES"
+        }
+      ]
+    },
+    {
+      "intent": "WhatIsCurrDiceTypeIntent" 
+    },
+    {
+      "intent": "RollTheDiceIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    }
+  ]
+}
