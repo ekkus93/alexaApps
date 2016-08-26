@@ -81,7 +81,7 @@ function onIntent(intentRequest, session, callback) {
     } else if ("PlayGlassCageIntent" == intentName) {
         playSound(intent, session, callback, "glasscage_16k.mp3");
     } else if ("PlayValkyriesIntent" == intentName) {
-        playSound(intent, session, callback, "rideOfTheValkyries_16.mp3")
+        playSound(intent, session, callback, "rideOfTheValkyries_16k.mp3")
     } else if ("AMAZON.HelpIntent" === intentName) {
         getWelcomeResponse(callback);
     } else {
@@ -113,21 +113,6 @@ function getWelcomeResponse(callback) {
 
     callback(sessionAttributes,
         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-}
-
-function playPriceIsWrongSession(intent, session, callback) {
-    var repromptText = null;
-    var sessionAttributes = {};
-    var shouldEndSession = false;
-    var speechOutput = '<speak><audio src="https://raw.githubusercontent.com/ekkus93/alexaApps/master/soundBoard/sounds/ThePriceIsRightLosingHorn_16k.mp3" /></speak>';
-    //var speechOutput = 'test';
-
-
-    // Setting repromptText to null signifies that we do not want to reprompt the user.
-    // If the user does not respond or says something that is not understood, the session
-    // will end.
-    callback(sessionAttributes,
-        buildSSMLResponse(speechOutput, shouldEndSession));
 }
 
 function playSound(intent, session, callback, soundFile) {
