@@ -17,11 +17,9 @@ exports.handler = function (event, context) {
          * Uncomment this if statement and populate with your skill's application ID to
          * prevent someone else from configuring a skill that sends requests to this function.
          */
-        /*
-        if (event.session.application.applicationId !== "amzn1.echo-sdk-ams.app.[unique-value-here]") {
+        if (event.session.application.applicationId !== "amzn1.ask.skill.f5c14ebd-4f83-4fe2-930a-12d9854c1791") {
              context.fail("Invalid Application ID");
         }
-        */
 
         if (event.session.new) {
             onSessionStarted({requestId: event.request.requestId}, event.session);
@@ -79,26 +77,16 @@ function onIntent(intentRequest, session, callback) {
 
     // Dispatch to your skill's intent handlers
     if ("PlayPriceIsWrongIntent" == intentName) {
-        playPriceIsWrongIntent(intent, session, callback);
+        playSound(intent, session, callback, "ThePriceIsRightLosingHorn_16k");
+    } else if ("PlayGlassCageIntent" == intentName) {
+        playSound(intent, session, callback, "glasscage_16k.mp3");
+    } else if ("PlayValkyriesIntent" == intentName) {
+        playSound(intent, session, callback, "rideOfTheValkyries_16.mp3")
     } else if ("AMAZON.HelpIntent" === intentName) {
         getWelcomeResponse(callback);
     } else {
         throw "Invalid intent";
     }
-
-    /*
-    if ("WhatDiceToUseIntent" === intentName) {
-        setDiceTypeSession(intent, session, callback);
-    } else if ("RollTheDiceIntent" === intentName) {
-        getDiceRollSession(intent, session, callback);
-    } else if ("WhatIsCurrDiceTypeIntent" === intentName) {
-        getCurrDiceTypeSession(intent, session, callback);        
-    } else if ("AMAZON.HelpIntent" === intentName) {
-        getWelcomeResponse(callback);
-    } else {
-        throw "Invalid intent";
-    }
-    */
 }
 
 /**
@@ -128,151 +116,31 @@ function getWelcomeResponse(callback) {
 }
 
 function playPriceIsWrongSession(intent, session, callback) {
-    var diceType;
     var repromptText = null;
     var sessionAttributes = {};
     var shouldEndSession = false;
-    var speechOutput = '<speak><audio src="https://carfu.com/audio/carfu-welcome.mp3" /></speak>';
+    var speechOutput = '<speak><audio src="https://raw.githubusercontent.com/ekkus93/alexaApps/master/soundBoard/sounds/ThePriceIsRightLosingHorn_16k.mp3" /></speak>';
+    //var speechOutput = 'test';
+
 
     // Setting repromptText to null signifies that we do not want to reprompt the user.
     // If the user does not respond or says something that is not understood, the session
     // will end.
     callback(sessionAttributes,
-         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+        buildSSMLResponse(speechOutput, shouldEndSession));
 }
 
-/**
- * Sets the color in the session and prepares the speech to reply to the user.
- */
-function setDiceTypeSession(intent, session, callback) {
-    var cardTitle = intent.name;
-    var diceTypeSlot = intent.slots.DiceType;
-    var repromptText = "";
-    var sessionAttributes = {};
-    var shouldEndSession = false;
-    var speechOutput = "";
-
-    if (diceTypeSlot) {
-        var diceType = diceTypeSlot.value;
-        sessionAttributes = createDiceAttributes(diceType);
-        
-        speechOutput = "You picked " + diceType + ". You can ask me " + 
-            "to roll the dice by saying, roll the dice?";
-        repromptText = "You can change what kind of dice roll you would like by saying, change dice to 2 d 6?";
-    } else {
-        speechOutput = "I'm not sure what kind of dice roll you would like. Please try again";
-        repromptText = "I'm not sure what kind of dice roll you would like. You can tell me kind of dice roll you would like " +
-            "by saying, use dice 3 d 6";
-    }
-
-    callback(sessionAttributes,
-         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-}
-
-function createDiceAttributes(diceType) {
-    return {
-        diceType: diceType
-    };
-}
-
-function rollDice(diceType) {
-    var numOfDiceMap = {
-        "one d four": 1,
-        "one d six": 1,
-        "two d six": 2,
-        "three d six": 3,
-        "one d eight": 1,
-        "one d ten": 1,
-        "two d ten": 2,
-        "one d twelve": 1,
-        "one d twenty": 1,
-        "one d hundred": 1
-    };
-    var maxDiceNumMap = {
-        "one d four": 4,
-        "one d six": 6,
-        "two d six": 6,
-        "three d six": 6,
-        "one d eight": 8,
-        "one d ten": 10,
-        "two d ten": 10,
-        "one d twelve": 12,
-        "one d twenty": 20,
-        "one d hundred": 100
-    };
-    
-    var numOfDice;
-    var maxDiceNum;
-
-    if (diceType in numOfDiceMap) {
-        numOfDice = numOfDiceMap[diceType];
-        maxDiceNum = maxDiceNumMap[diceType];
-    } else {
-        // default
-        numOfDice = 1;
-        maxDiceNum = 6;
-    }   
-    
-    var totalRoll = 0;
-    for(var i=0; i<numOfDice; i++) {
-        totalRoll += Math.floor((Math.random() * maxDiceNum) + 1);    
-    }
-    
-    return totalRoll;
-}
-
-function getDiceRollSession(intent, session, callback) {
-    var diceType;
+function playSound(intent, session, callback, soundFile) {
     var repromptText = null;
     var sessionAttributes = {};
     var shouldEndSession = false;
-    var speechOutput = "";
-
-    if (session.attributes) {
-        diceType = session.attributes.diceType;
-        sessionAttributes = session.attributes;
-    }
-
-    if (diceType) {
-        var totalRoll = rollDice(diceType);
-        speechOutput = "Your roll is " + totalRoll + ".";
-        // shouldEndSession = true;
-    } else {
-        speechOutput = "I'm not sure what of dice roll you would like, you can say, use dice 1 d 6.";
-    }
+    var speechOutput = '<speak><audio src="https://raw.githubusercontent.com/ekkus93/alexaApps/master/soundBoard/sounds/' + soundFile + '" /></speak>';
 
     // Setting repromptText to null signifies that we do not want to reprompt the user.
     // If the user does not respond or says something that is not understood, the session
     // will end.
     callback(sessionAttributes,
-         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-}
-
-function getCurrDiceTypeSession(intent, session, callback) {
-    var diceType;
-    var repromptText = null;
-    var sessionAttributes = {};
-    var shouldEndSession = false;
-    var speechOutput = "";
-
-    if (session.attributes) {
-        diceType = session.attributes.diceType;
-        sessionAttributes = session.attributes;
-    }
-
-    if (diceType) {
-        var totalRoll = rollDice(diceType);
-        speechOutput = "Your dice is set to " + diceType + ".";
-        // shouldEndSession = true;
-    } else {
-        speechOutput = "I'm not sure what of dice roll you would like, you can say, use dice 1 d 6.";
-    }
-
-    // Setting repromptText to null signifies that we do not want to reprompt the user.
-    // If the user does not respond or says something that is not understood, the session
-    // will end.
-    callback(session.attributes,
-         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));    
+        buildSSMLResponse(speechOutput, shouldEndSession));
 }
 
 // --------------- Helpers that build all of the responses -----------------------
@@ -296,6 +164,16 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
         },
         shouldEndSession: shouldEndSession
     };
+}
+
+function buildSSMLResponse(ssmlText, shouldEndSession) {
+    return {
+            outputSpeech: {
+                type: "SSML",
+                ssml: ssmlText
+            },
+            shouldEndSession: shouldEndSession
+        };
 }
 
 function buildResponse(sessionAttributes, speechletResponse) {

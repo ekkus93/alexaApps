@@ -1,20 +1,14 @@
 {
   "intents": [
     {
-      "intent": "WhatDiceToUseIntent",
-      "slots": [
-        {
-          "name": "DiceType",
-          "type": "LIST_OF_DICE_TYPES"
-        }
-      ]
+      "intent": "PlayPriceIsWrongIntent"
     },
     {
-      "intent": "WhatIsCurrDiceTypeIntent" 
+      "intent": "PlayGlassCageIntent"
     },
     {
-      "intent": "RollTheDiceIntent"
-    },
+      "intent": "PlayValkyriesIntent"
+    },        
     {
       "intent": "AMAZON.HelpIntent"
     }
